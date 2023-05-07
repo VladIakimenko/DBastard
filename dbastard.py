@@ -2,9 +2,18 @@
 
 from os import path, makedirs
 from sys import exit
+import argparse
 
 from config import *
 from postgres import Postgres
+
+parser = argparse.ArgumentParser(description='DBastard')
+
+parser.add_argument('-db', '--database', type=str, help='database name')
+parser.add_argument('-p', '--password', type=str, help='database password')
+parser.add_argument('-u', '--user', type=str, help='database user')
+
+args = parser.parse_args()
 
 
 def execute_script(con):
@@ -193,6 +202,7 @@ def read_cmd(cmd):
 
 def launch():
     print()
+        
     pass_path = PASSWORD_PATH.replace('\\', '/')
     if path.exists(pass_path):
         with open(pass_path, 'rt', encoding='UTF-8') as filehandle:
@@ -208,7 +218,13 @@ def launch():
               'You are required to execute "createdb" command manually before you can proceed. '
               'Please ensure names and paths listed in "config.py" are set to actual values.')        
 
-    con = Postgres(DATABASE, USERNAME, password)
+
+    database = args.database if args.database else DATABASE
+    user = args.user if args.user else USERNAME
+    if args.password:
+        password = args.password
+        
+    con = Postgres(database, user, password)
     return con
 
 
