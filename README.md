@@ -1,15 +1,15 @@
 # DBastard
-A lightweight tool to read and mange a DB. Operates DDL queries in termianal. Outputs SELECT queries to XLS.
-Well-supports django-created or sqlalchemy databases.
+A lightweight tool to read and mange a DB. Operates DDL queries in terminal. Outputs SELECT queries to XLS.  
+Well-supports django-created or sqlalchemy databases.  
 
-Edit the config.py to set up details for the database to wrok with. Alternatively, use flags to run the app with specific arguments.\
+Edit the config.py to set up details for the database to work with. Alternatively, use flags to run the app with specific arguments.  
 Supports the following flags:
 ```
 '-db', '--database' for database name'
 '-p', '--password' for database password'
 '-u', '--user' for 'database user'
 ```
-The use of arguments overrides the settings from config.py for a single run.
+The use of arguments overrides the settings from config.py for a single run.  
 
 List of supported commands:
 ```
@@ -22,5 +22,5 @@ List of supported commands:
  "quit" - leave the program
 ```
 
-Known issues:
- - May misbehave with user-created tables named 'user' in sqlalchemy databases.
+Known issues:  
+ - May misbehave with user-created tables named 'user' in sqlalchemy databases.  
