@@ -1,5 +1,5 @@
 # DBastard
-A lightweight tool to read and mange a DB. Operates DDL queries in terminal. Outputs SELECT queries to XLS.  
+A lightweight tool to read and manage a DB. Operates DDL queries in terminal. Outputs SELECT queries to XLS.  
 Well-supports django-created or sqlalchemy databases.  
 
 Edit the config.py to set up details for the database to work with. Alternatively, use flags to run the app with specific arguments.  
