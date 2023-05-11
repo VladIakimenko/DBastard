@@ -13,7 +13,7 @@ The use of arguments overrides the settings from config.py for a single run.
 
 List of supported commands:
 ```
- "show tables" - display the available tables
+ "show tables" - display available tables
  "create table" - create a new table
  "drop table" - remove an existing table
  "alter table" - change an existing table
