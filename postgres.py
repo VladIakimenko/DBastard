@@ -153,7 +153,7 @@ class Postgres:
                                   f'{fk_indicator}'
                                   f'{" " * int((frame - len(fk_indicator)) / 2)}'
                                   f'''   REFERENCES: "{tables[constraint[2].strip('"')][constraint[4][0]]}"'''
-                                  f'   from "{constraint[2]}"')
+                                  f'''   from "{constraint[2].strip('"')}"''')
                             printed = True
                     if not printed:
                         print(f'{" " * int((width - len(column)) / 2)}{column}')

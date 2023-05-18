@@ -202,27 +202,23 @@ def read_cmd(cmd):
 
 def launch():
     print()
-        
-    pass_path = PASSWORD_PATH.replace('\\', '/')
-    if path.exists(pass_path):
-        with open(pass_path, 'rt', encoding='UTF-8') as filehandle:
-            password = filehandle.read()
-    else:
-        password = input(f'Enter password for "{USERNAME}" to access "{DATABASE}" database: ')
-        if not path.exists(pass_path.rpartition('/')[0]):
-            makedirs(pass_path.rpartition('/')[0])
-        with open(pass_path, 'wt', encoding='UTF-8') as filehandle:
-            filehandle.writelines(password)
-            
-        print('IMPORTANT NOTE: This app does not create the DB! '
-              'You are required to execute "createdb" command manually before you can proceed. '
-              'Please ensure names and paths listed in "config.py" are set to actual values.')        
-
-
+              
     database = args.database if args.database else DATABASE
     user = args.user if args.user else USERNAME
     if args.password:
         password = args.password
+    else:
+        pass_path = PASSWORD_PATH.replace('\\', '/')
+        if path.exists(pass_path):
+            with open(pass_path, 'rt', encoding='UTF-8') as filehandle:
+                password = filehandle.read()
+        else:
+           password = input(f'Enter password for "{user}" to access "{database}" database: ')
+           if not path.exists(pass_path.rpartition('/')[0]):
+                makedirs(pass_path.rpartition('/')[0])
+           with open(pass_path, 'wt', encoding='UTF-8') as filehandle:
+                filehandle.writelines(password)
+            
         
     con = Postgres(database, user, password)
     return con
