@@ -2,6 +2,7 @@
 
 ### Description
 A lightweight tool to read and manage a DB. Operates DDL queries in terminal. Outputs SELECT queries to XLS.  
+Displays tables in a nice graphical manner, indicating the table name, cloumns, their types and PK and FK constraints.  
 Well-supports django-created or sqlalchemy databases.  
 
 ### Set up

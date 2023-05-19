@@ -1,13 +1,12 @@
 import atexit
 import os
-import sys
-import time
 from datetime import datetime
 import subprocess
 
 import xlwt
 import psycopg2
 
+from config import TABLE_WIDTH
 
 TEMP_XLS_NAME = 'records.xls'
 STD_ERROR_LOG = 'std_errors.txt'
@@ -32,7 +31,7 @@ class Postgres:
         self.connection.close()
         if os.path.exists(TEMP_XLS_NAME):
             os.remove(TEMP_XLS_NAME)
-        print('<SYSTEM> Postgres: Connection to DB terminated. Cursor closed. Temp files removed.')
+        print('<SYSTEM> Postgres: Connection to DB terminated. Cursor closed.\nTemporary files removed.')
 
     def execute_script(self, script_path):
         """
@@ -98,7 +97,16 @@ class Postgres:
             constraints[table] = self.cursor.fetchall()
         return constraints
 
-    def show_tables(self):
+    def __get_data_type(self, table_name, column_name):
+        """
+        A service method to receive a single column data type
+        """
+        query = f"SELECT data_type FROM information_schema.columns " \
+                f"WHERE table_name='{table_name}' AND column_name='{column_name}';"
+        self.cursor.execute(query)
+        return self.cursor.fetchone()[0]
+
+    def show_tables(self, custom_width=None):
         """
         The method prints out the current DB layout in a standard graphic form.
         It indicates the tables' Primary and Foreign keys and their referrants.
@@ -111,12 +119,12 @@ class Postgres:
         
         def fkey_check(constraint, column):
             return 'fk' in constraint[0] and f'_{column}_' in constraint[0]
-            
+
         # Printout config:
-        width = 30
-        frame = 5
-        pk_indicator = 'PK'
-        fk_indicator = 'FK'
+
+        width = int(TABLE_WIDTH)
+        pk_indicator = ' PK |'
+        fk_indicator = '| FK '
 
         for table_name, columns_names in tables.items():
 
@@ -131,11 +139,13 @@ class Postgres:
             for constraint in constraints[table_name]:
                 if constraint[0] == f'{table_name}_pkey':
                     pk_index = constraint[3][0]
-            print(f'{" " * int((frame - len(pk_indicator)) / 2)}'
-                  f'{pk_indicator}'
-                  f'{" " * int((frame - len(pk_indicator)) / 2)}|'
-                  f'{" " * int(((width - frame) - len(columns_names[pk_index])) / 2)}'
-                  f'{columns_names[pk_index]}')
+                    column_type = self.__get_data_type(table_name, columns_names[pk_index])
+            print(
+                f'{pk_indicator}'
+                f'{" " * int((width - len(f"{columns_names[pk_index]} ({column_type})") - len(pk_indicator)) / 2)}'
+                f'{columns_names[pk_index]} '
+                f'({column_type})'
+            )
             print(f'{"." * width}')
 
             # Other columns:
@@ -143,20 +153,24 @@ class Postgres:
                 for index, column in columns_names.items():
                     if index == pk_index:
                         continue
+                    column_type = self.__get_data_type(table_name, column)
                     printed = False
                     for constraint in constraints[table_name]:
                         if fkey_check(constraint, column):
-                            print(f'{" " * int(((width - frame) - len(column)) / 2)}'
-                                  f'{column}'
-                                  f'{" " * int(((width - frame) - len(column)) / 2)}|'
-                                  f'{" " * int((frame - len(fk_indicator)) / 2)}'
-                                  f'{fk_indicator}'
-                                  f'{" " * int((frame - len(fk_indicator)) / 2)}'
-                                  f'''   REFERENCES: "{tables[constraint[2].strip('"')][constraint[4][0]]}"'''
-                                  f'''   from "{constraint[2].strip('"')}"''')
+                            front_gap = int((width - len(fk_indicator) - len(f"{column} ({column_type})")) / 2)
+                            end_gap = width - front_gap - len(f"{column} ({column_type})") - len(fk_indicator)
+                            print(
+                                f'{" " * front_gap}'
+                                f'{column} '
+                                f'({column_type})'
+                                f'{" " * end_gap}'
+                                f'{fk_indicator}'
+                                f'''   REFERENCES: "{tables[constraint[2].strip('"')][constraint[4][0]]}"'''
+                                f'''   from "{constraint[2].strip('"')}"'''
+                            )
                             printed = True
                     if not printed:
-                        print(f'{" " * int((width - len(column)) / 2)}{column}')
+                        print(f'{" " * int((width - len(f"{column} ({column_type})")) / 2)}{column} ({column_type})')
                     print(f'{"." * width}')
             print('\n')
 

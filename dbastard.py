@@ -189,13 +189,15 @@ def read_cmd(cmd):
     if cmd in ('quit', 'q', 'e', 'exit'):
         exit()
 
-    cmd_dict = {'show tables': display_tables,
-                'create table': create_table,
-                'drop table': drop_table,
-                'alter table': alter_table,
-                'execute script': execute_script,
-                'show records': show_records,
-                '404': cmd_not_found}
+    cmd_dict = {
+        'show tables': display_tables,
+        'create table': create_table,
+        'drop table': drop_table,
+        'alter table': alter_table,
+        'execute script': execute_script,
+        'show records': show_records,
+        '404': cmd_not_found
+    }
 
     return (cmd_dict['404'], cmd_dict.get(cmd))[cmd in cmd_dict]
 
@@ -218,8 +220,7 @@ def launch():
                 makedirs(pass_path.rpartition('/')[0])
            with open(pass_path, 'wt', encoding='UTF-8') as filehandle:
                 filehandle.writelines(password)
-            
-        
+
     con = Postgres(database, user, password)
     return con
 
