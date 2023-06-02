@@ -5,6 +5,8 @@ A lightweight tool to read and manage a DB. Operates DDL queries in terminal. Ou
 Displays tables in a nice graphical manner, indicating the table name, columns, their types and PK and FK constraints.  
 Well-supports django-created or sqlalchemy databases.  
 
+![show tables](screenshot1.png)
+
 ### Set up
 Edit the config.py to set up details for the database to work with. Alternatively, use flags to run the app with specific arguments.  
 Supports the following flags:
@@ -26,6 +28,8 @@ List of supported commands:
  "show records" - display records from a specific table. Operates with a table name (to view all records) / SELECT queries for custom selections.
  "quit" - leave the program
 ```
+![show records](screenshot2.png)
+
 ### Use cases
 One of the potential use cases, that proved helpful, is for a quick overview of a newly created or updated database.  
 
